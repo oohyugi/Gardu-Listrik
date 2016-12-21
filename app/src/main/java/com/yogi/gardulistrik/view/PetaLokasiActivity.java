@@ -112,9 +112,9 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
                     .title(loc.nama_gardu)
                     .snippet(loc.alamat));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(badung, 10));
-//            map.setMyLocationEnabled(true);
-//            map.getUiSettings().setMyLocationButtonEnabled(true);
-//            map.getUiSettings().setCompassEnabled(true);
+            map.setMyLocationEnabled(true);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
+            map.getUiSettings().setCompassEnabled(true);
 
 
 
@@ -125,13 +125,13 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
     public void onConnected(@Nullable Bundle bundle) {
         mLocation  = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         Log.e( "onConnected: ", String.valueOf(mLocation.getLatitude()));
-        if (mLocation!=null){
-            LatLng myLocation = new LatLng(mLocation.getLatitude(),mLocation.getLongitude());
-            map.addMarker(new MarkerOptions()
-                    .position(myLocation)
-                    .title("LOKASI SAYA")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_loc)));
-        }
+//        if (mLocation!=null){
+//            LatLng myLocation = new LatLng(mLocation.getLatitude(),mLocation.getLongitude());
+//            map.addMarker(new MarkerOptions()
+//                    .position(myLocation)
+//                    .title("LOKASI SAYA")
+//                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_loc)));
+//        }
 
     }
 
