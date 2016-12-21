@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="?android:attr/dividerHorizontal"
+    android:showDividers="end"
+    android:dividerPadding="2dp"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/nama_trafo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nama Trafo"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/penyulang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alamat"
+        />
+    <TextView
+        android:id="@+id/alamat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alamat"
+        />
+
+    <TextView
+
+        android:id="@+id/daya"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorAccent"
+        android:text="DAYA"
+        />
+
+</LinearLayout>
