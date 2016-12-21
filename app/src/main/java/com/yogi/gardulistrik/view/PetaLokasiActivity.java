@@ -149,13 +149,13 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
     public void onLocationChanged(Location location) {
         mLocation = location;
         Log.e( "onConnected: ", String.valueOf(location.getLatitude()));
-        if (mLocation!=null){
-            LatLng myLocation = new LatLng(mLocation.getLatitude(),mLocation.getLongitude());
-            map.addMarker(new MarkerOptions()
-                    .position(myLocation)
-                    .title("LOKASI SAYA")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_loc)));
-        }
+//        if (mLocation!=null){
+//            LatLng myLocation = new LatLng(mLocation.getLatitude(),mLocation.getLongitude());
+//            map.addMarker(new MarkerOptions()
+//                    .position(myLocation)
+//                    .title("LOKASI SAYA")
+//                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_loc)));
+//        }
 
 
 
