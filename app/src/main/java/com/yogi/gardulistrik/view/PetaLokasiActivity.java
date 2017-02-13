@@ -9,6 +9,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +29,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -33,6 +37,7 @@ import com.yogi.gardulistrik.R;
 import com.yogi.gardulistrik.api.ApiClient;
 import com.yogi.gardulistrik.api.MyObservable;
 import com.yogi.gardulistrik.api.mdl.BaseMdl;
+import com.yogi.gardulistrik.api.mdl.FilterMdl;
 import com.yogi.gardulistrik.api.mdl.TrafoMdl;
 
 import java.util.ArrayList;
@@ -48,13 +53,14 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
     private  List<TrafoMdl> mListData = new ArrayList<>();
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
+    public BitmapDescriptor bitmapDescriptor;
     LatLng arrLoc;
-
+   public int click = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peta_lokasi);
-
+        bitmapDescriptor =BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN);
         getSupportActionBar().setTitle("Maps");
         mClient = new ApiClient();
         MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -108,7 +114,7 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
             LatLng badung = new LatLng(-6.920145, 107.612255);
             map.addMarker(new MarkerOptions()
                     .position(arrLoc)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+                    .icon(bitmapDescriptor)
                     .title(loc.nama_gardu)
                     .snippet(loc.alamat));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(badung, 10));
@@ -195,6 +201,11 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
 
     private void setupDialogArea() {
         final Dialog dialog = new Dialog(this);
+        FilterAdapter mAdapter;
+        final Button btnOk;
+        RecyclerView mRecyclerView;
+        final EditText edJarak ;
+
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_filter);
 //        dialog.getWindow().setLayout(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
@@ -209,36 +220,93 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
 //        });
 //        recyclerView.setAdapter(adapter);
 
-        Button btnOk = (Button) dialog.findViewById(R.id.btn_ok);
-        final EditText edJarak = (EditText) dialog.findViewById(R.id.ed_jarak);
+
+        btnOk = (Button) dialog.findViewById(R.id.btn_ok);
+        mRecyclerView = (RecyclerView) dialog.findViewById(R.id.recyleView);
+        edJarak = (EditText) dialog.findViewById(R.id.ed_jarak);
+        edJarak.setVisibility(View.GONE);
+        btnOk.setVisibility(View.GONE);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(PetaLokasiActivity.this));
+        mAdapter = new FilterAdapter(PetaLokasiActivity.this, FilterMdl.getFilterItem(), new FilterAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                edJarak.setVisibility(View.VISIBLE);
+                btnOk.setVisibility(View.VISIBLE);
+                switch (position){
+                    case 0:
+                      edJarak.setHint("Masukkan Nama Feeder");
+                        edJarak.setInputType(InputType.TYPE_CLASS_TEXT);
+                        click=1;
+                        break;
+                    case 1:
+                        click=2;
+                        edJarak.setInputType(InputType.TYPE_CLASS_NUMBER);
+                        edJarak.setHint("Masukkan Jarak per 1 km");
+                        break;
+
+                }
+            }
+        });
+
+        mRecyclerView.setAdapter(mAdapter);
+
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 map.clear();
-                mClient.getmServices().getMapsTerdekat(6,mLocation.getLatitude(),mLocation.getLongitude(),edJarak.getText().toString() )
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new MyObservable<BaseMdl<List<TrafoMdl>>>() {
-                            @Override
-                            protected void onError(String message) {
-                                Log.e( "onError: ",message );
+                if (click==1){
+                    mClient.getmServices().getCariPenyulang(2,edJarak.getText().toString() )
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new MyObservable<BaseMdl<List<TrafoMdl>>>() {
+                                @Override
+                                protected void onError(String message) {
+                                    Log.e( "onError: ",message );
 
 
-                            }
+                                }
 
-                            @Override
-                            protected void onSuccess(BaseMdl<List<TrafoMdl>> listBaseMdl) {
+                                @Override
+                                protected void onSuccess(BaseMdl<List<TrafoMdl>> listBaseMdl) {
 
                                     Log.e( "onSuccess: ",listBaseMdl.data.get(0).alamat );
+                                    bitmapDescriptor =BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
                                     showMap(listBaseMdl.data);
 
 
-                                dialog.dismiss();
-                            }
+                                    dialog.dismiss();
+                                }
 
 
-                        });
+                            });
+                }else if (click==2){
+                    mClient.getmServices().getMapsTerdekat(6,mLocation.getLatitude(),mLocation.getLongitude(),edJarak.getText().toString() )
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new MyObservable<BaseMdl<List<TrafoMdl>>>() {
+                                @Override
+                                protected void onError(String message) {
+                                    Log.e( "onError: ",message );
+
+
+                                }
+
+                                @Override
+                                protected void onSuccess(BaseMdl<List<TrafoMdl>> listBaseMdl) {
+
+                                    Log.e( "onSuccess: ",listBaseMdl.data.get(0).alamat );
+                                    bitmapDescriptor =BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
+                                    showMap(listBaseMdl.data);
+
+
+                                    dialog.dismiss();
+                                }
+
+
+                            });
+                }
+
             }
         });
 
