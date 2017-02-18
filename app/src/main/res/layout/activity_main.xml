@@ -32,6 +32,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Maps"/>
+        <Button
+            android:id="@+id/btn_admin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Login Admin"/>
+        <Button
+            android:visibility="gone"
+            android:id="@+id/btn_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tambah Data"/>
+
+        <Button
+            android:visibility="gone"
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -47,4 +47,16 @@
             android:layout_height="wrap_content"
             android:text="daya"/>
     </LinearLayout>
+    <Button
+        android:visibility="gone"
+        android:id="@+id/btn_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit Data"/>
+    <Button
+        android:visibility="gone"
+        android:id="@+id/btn_hapus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hapus Data"/>
 </LinearLayout>

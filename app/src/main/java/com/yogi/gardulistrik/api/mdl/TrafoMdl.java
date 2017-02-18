@@ -16,7 +16,10 @@ public class TrafoMdl implements Serializable {
     public String nama_gardu;
     public String alamat;
     public String daya;
+    public String jenis_gardu;
+    public String singk_gardu;
     public double latitude;
     public double longitude;
+    public String feeder;
 
 }
