@@ -241,7 +241,7 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
                     case 1:
                         click=2;
                         edJarak.setInputType(InputType.TYPE_CLASS_NUMBER);
-                        edJarak.setHint("Masukkan Jarak per 1 km");
+                        edJarak.setHint("Masukkan Jarak per km");
                         break;
 
                 }
@@ -262,7 +262,6 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
                             .subscribe(new MyObservable<BaseMdl<List<TrafoMdl>>>() {
                                 @Override
                                 protected void onError(String message) {
-                                    Log.e( "onError: ",message );
 
 
                                 }
@@ -270,9 +269,14 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
                                 @Override
                                 protected void onSuccess(BaseMdl<List<TrafoMdl>> listBaseMdl) {
 
-                                    Log.e( "onSuccess: ",listBaseMdl.data.get(0).alamat );
-                                    bitmapDescriptor =BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-                                    showMap(listBaseMdl.data);
+
+
+                                    if (!listBaseMdl.data.get(0).nama_gardu.equals("error")){
+                                        bitmapDescriptor =BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                                        showMap(listBaseMdl.data);
+                                    }
+
+
 
 
                                     dialog.dismiss();

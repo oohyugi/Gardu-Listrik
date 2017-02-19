@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.yogi.gardulistrik.R;
@@ -16,6 +19,9 @@ import com.yogi.gardulistrik.api.mdl.AdminMdl;
 import com.yogi.gardulistrik.api.mdl.BaseMdl;
 import com.yogi.gardulistrik.api.mdl.LoginMdl;
 import com.yogi.gardulistrik.api.mdl.TrafoMdl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,12 +55,16 @@ public class AdminActivity extends AppCompatActivity {
     @BindView(R.id.ed_idPenyulang)
     EditText edId;
     String id;@BindView(R.id.ed_feeder)
-    EditText edFeeder;
+    Spinner edFeeder;
     String feeder;
+    ArrayAdapter<String> spinnerAdapter;
+    private List<String> itemSpinner = new ArrayList<>();
+    private List<TrafoMdl> listMdl = new ArrayList<>();
 
     ApiClient mClient;
     TrafoMdl mdl;
     int status;
+    String idPenyulang;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +73,43 @@ public class AdminActivity extends AppCompatActivity {
         mClient = new ApiClient();
         mdl = (TrafoMdl) getIntent().getSerializableExtra("data");
         status = getIntent().getIntExtra("status",0);
+     mClient.getmServices().getData(7).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MyObservable<BaseMdl<List<TrafoMdl>>>() {
+                    @Override
+                    protected void onError(String message) {
+                        Toast.makeText(AdminActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    protected void onSuccess(BaseMdl<List<TrafoMdl>> listBaseMdl) {
+                        listMdl.addAll(listBaseMdl.data);
+                        for (int i = 0; i < listBaseMdl.data.size(); i++) {
+                            itemSpinner.add(listBaseMdl.data.get(i).nama_penyulang);
+                        }
+
+                        spinnerAdapter = new ArrayAdapter<String>(AdminActivity.this,android.R.layout.simple_spinner_dropdown_item,itemSpinner);
+
+                        edFeeder.setAdapter(spinnerAdapter);
+
+                        if (status==2){
+                            edFeeder.setSelection(spinnerAdapter.getPosition(mdl.nama_penyulang));
+                        }
+                        edFeeder.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                idPenyulang =listMdl.get(i).id_penyulang;
+                                Log.e("onItemSelected: ",idPenyulang );
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        });
+
+                    }
+                });
        if (mdl!=null){
 
            edAlamat.setText(mdl.alamat);
@@ -73,7 +120,6 @@ public class AdminActivity extends AppCompatActivity {
            edjenis.setText(mdl.jenis_gardu);
            edId.setText(mdl.id_penyulang);
            edNama.setText(mdl.nama_gardu);
-           edFeeder.setText(mdl.feeder);
        }
 
     }
@@ -87,11 +133,11 @@ public class AdminActivity extends AppCompatActivity {
         jenis  =edjenis.getText().toString();
         nama = edNama.getText().toString();
         id = edId.getText().toString();
-        feeder = edFeeder.getText().toString();
 
         if (status==2){
 
-            mClient.getmServices().postUpdateData(2,alamat,daya,latitude,longitude,singk,jenis,nama,id,feeder,mdl.id_gardu)
+
+            mClient.getmServices().postUpdateData(2,alamat,daya,latitude,longitude,singk,jenis,nama,idPenyulang,"0",mdl.id_gardu)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new MyObservable<String>() {
@@ -109,7 +155,7 @@ public class AdminActivity extends AppCompatActivity {
                         }
                     });
         }else{
-            mClient.getmServices().postData(1,alamat,daya,latitude,longitude,singk,jenis,nama,id,feeder)
+            mClient.getmServices().postData(1,alamat,daya,latitude,longitude,singk,jenis,nama,idPenyulang,"0")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new MyObservable<String>() {

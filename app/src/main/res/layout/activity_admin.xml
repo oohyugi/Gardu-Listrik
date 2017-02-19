@@ -72,14 +72,19 @@
         android:hint="Nama Gardu"
         android:id="@+id/ed_nama_gardu"/>
     <EditText
+        android:visibility="gone"
     android:layout_marginTop="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
         android:inputType="number"
     android:hint="Id Penyulang"
     android:id="@+id/ed_idPenyulang"/>
-    <EditText
+    <TextView
         android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Penyulang"/>
+    <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Feeder"
