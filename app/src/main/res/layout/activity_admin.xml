@@ -28,11 +28,18 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="14dp">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Location"
+        android:id="@+id/btnSelectLocation"/>
     <EditText
         android:layout_marginTop="14dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="alamat"
+        android:enabled="false"
+        android:visibility="visible"
         android:id="@+id/ed_alamat"/>
     <EditText
         android:layout_marginTop="16dp"
@@ -46,12 +53,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Latitude"
-        android:id="@+id/ed_latitude"/>
+        android:id="@+id/ed_latitude"
+        android:visibility="gone"/>
     <EditText
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Longitude"
+        android:visibility="gone"
         android:id="@+id/ed_longitude"/>
     <EditText
         android:layout_marginTop="16dp"

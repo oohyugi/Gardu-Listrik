@@ -14,6 +14,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +45,11 @@ public class PencarianActivity extends BaseActivity {
     TrafoAdapter adapter;
     List<TrafoMdl> mData = new ArrayList<>();
     ProgressDialog progressDialog;
+    @BindView(R.id.radioGardu)
+    RadioButton radioGardu;
+    @BindView(R.id.radioPenyulang)
+            RadioButton radioPenyulang;
+    int stat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +59,46 @@ public class PencarianActivity extends BaseActivity {
 
         mClient = new ApiClient();
         progressDialog = ProgressDialog.show(this,null,"Please Wait..");
-        final int stat = getIntent().getIntExtra("STAT",0);
-        if (stat==1){
-            callAPI(1);
-        }else if (stat==2){
-            callAPI(3);
-        }
+        callAPI(1);
+//        stat = getIntent().getIntExtra("STAT",0);
+        radioPenyulang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                radioGardu.setChecked(false);
+                radioPenyulang.setChecked(true);
+                stat=1;
+                callAPI(1);
+            }
+        });
+        radioGardu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                radioPenyulang.setChecked(false);
+                radioGardu.setChecked(true);
+                callAPI(3);
+                stat=2;
+            }
+        });
+//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                switch (checkedId){
+//                    case R.id.radioGardu:
+//                        stat=2;
+//                        callAPI(3);
+//                        break;
+//                    case R.id.radioPenyulang:
+//                        stat =1;
+//                        callAPI(1);
+//                        break;
+//                }
+//            }
+//        });
+//        if (stat==1){
+//
+//        }else if (stat==2){
+//
+//        }
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -2,6 +2,7 @@ package com.yogi.gardulistrik.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.yogi.gardulistrik.api.ApiClient;
 import com.yogi.gardulistrik.api.MyObservable;
 import com.yogi.gardulistrik.api.mdl.AdminMdl;
 import com.yogi.gardulistrik.api.mdl.BaseMdl;
+import com.yogi.gardulistrik.api.mdl.CoordinateMdl;
 import com.yogi.gardulistrik.api.mdl.LoginMdl;
 import com.yogi.gardulistrik.api.mdl.TrafoMdl;
 
@@ -28,6 +30,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.yogi.gardulistrik.view.MapsActivity.TAG_DATA_LOCATION;
+import static com.yogi.gardulistrik.view.MapsActivity.TAG_RESULT_LOCATION;
 
 public class AdminActivity extends AppCompatActivity {
 
@@ -65,6 +70,7 @@ public class AdminActivity extends AppCompatActivity {
     TrafoMdl mdl;
     int status;
     String idPenyulang;
+    CoordinateMdl mLocationModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,12 +129,17 @@ public class AdminActivity extends AppCompatActivity {
        }
 
     }
+    @OnClick(R.id.btnSelectLocation)
+    public void onClickLoc(){
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivityForResult(intent,TAG_RESULT_LOCATION);
+    }
     @OnClick(R.id.btn_login)
     public void login(View v){
         alamat = edAlamat.getText().toString();
         daya = edDaya.getText().toString();
-        latitude = edLatitude.getText().toString();
-        longitude = edLongitude.getText().toString();
+        latitude = String.valueOf(mLocationModel.latitude);
+        longitude = String.valueOf(mLocationModel.longitude);
         singk =edSingk.getText().toString();
         jenis  =edjenis.getText().toString();
         nama = edNama.getText().toString();
@@ -179,6 +190,19 @@ public class AdminActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TAG_RESULT_LOCATION){
+            if (data!=null) {
+                mLocationModel = (CoordinateMdl) data.getSerializableExtra(TAG_DATA_LOCATION);
+                edAlamat.setText(mLocationModel.address);
+
+            }
+        }
+    }
+
     public static void startThisActivity(Context context){
         Intent intent = new Intent(context, AdminActivity.class);
         context.startActivity(intent);

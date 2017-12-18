@@ -21,11 +21,12 @@
             android:id="@+id/btn_penyulang"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Penyulang"/>
+            android:text="CARI"/>
         <Button
             android:id="@+id/btn_trafo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:text="trafo"/>
         <Button
             android:id="@+id/btn_maps"

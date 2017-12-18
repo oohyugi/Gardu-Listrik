@@ -17,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     ApiServices mServices;
-    String BASE_URL= "http://192.168.43.166/gardu_listrik/";
+    String BASE_URL= "http://192.168.43.160:900/gardu_listrik/";
 
     public ApiClient(){
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

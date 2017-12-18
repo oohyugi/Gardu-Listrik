@@ -1,11 +1,14 @@
 package com.yogi.gardulistrik.view;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -48,25 +51,28 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
-    private  GoogleMap map;
+    private GoogleMap map;
     private ApiClient mClient;
-    private  List<TrafoMdl> mListData = new ArrayList<>();
+    private List<TrafoMdl> mListData = new ArrayList<>();
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
     public BitmapDescriptor bitmapDescriptor;
     LatLng arrLoc;
-   public int click = 0;
+    public int click = 0;
+    private static final int GPS_PERMISSION = 1;
+    private static final int REQUEST_CHECK_SETTINGS = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peta_lokasi);
-        bitmapDescriptor =BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN);
+        bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN);
         getSupportActionBar().setTitle("Maps");
         mClient = new ApiClient();
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        mGoogleApiClient= new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -74,8 +80,8 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
 
     }
 
-    public static void startThisActivity(Context context){
-        Intent intent = new Intent(context,PetaLokasiActivity.class);
+    public static void startThisActivity(Context context) {
+        Intent intent = new Intent(context, PetaLokasiActivity.class);
         context.startActivity(intent);
     }
 
@@ -93,7 +99,7 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
                 .subscribe(new MyObservable<BaseMdl<List<TrafoMdl>>>() {
                     @Override
                     protected void onError(String message) {
-                        Log.e( "onError: ",message );
+                        Log.e("onError: ", message);
 
                     }
 
@@ -109,15 +115,16 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
 
     private void showMap(List<TrafoMdl> data) {
         for (int i = 0; i < data.size(); i++) {
-            TrafoMdl loc =data.get(i);
-             arrLoc = new LatLng(loc.latitude,loc.longitude);
-            LatLng badung = new LatLng(-6.920145, 107.612255);
+            TrafoMdl loc = data.get(i);
+            arrLoc = new LatLng(loc.latitude, loc.longitude);
+            LatLng badung = new LatLng(mLocation.getLatitude(),mLocation.getLongitude());
             map.addMarker(new MarkerOptions()
                     .position(arrLoc)
                     .icon(bitmapDescriptor)
                     .title(loc.nama_gardu)
                     .snippet(loc.alamat));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(badung, 10));
+
             map.setMyLocationEnabled(true);
             map.getUiSettings().setMyLocationButtonEnabled(true);
             map.getUiSettings().setCompassEnabled(true);
@@ -129,8 +136,19 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        mLocation  = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        Log.e( "onConnected: ", String.valueOf(mLocation.getLatitude()));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, GPS_PERMISSION);
+        else {
+            mLocation  = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+//            startService(new Intent(this, MyLocationService.class));
+//            startService(new Intent(this, LocationService.class));
+        }
+
+
+//        Log.e( "onConnected: ", String.valueOf(mLocation.getLatitude()));
 //        if (mLocation!=null){
 //            LatLng myLocation = new LatLng(mLocation.getLatitude(),mLocation.getLongitude());
 //            map.addMarker(new MarkerOptions()
@@ -165,6 +183,20 @@ public class PetaLokasiActivity extends BaseActivity implements OnMapReadyCallba
 
 
 
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+
+        if (requestCode == GPS_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+        }
+
+//            startService(new Intent(this, LocationService.class));
+        // initialize();
 
     }
 

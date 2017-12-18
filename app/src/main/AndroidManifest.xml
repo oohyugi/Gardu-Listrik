@@ -33,7 +33,8 @@
         <activity android:name=".view.PencarianActivity" />
         <activity android:name=".view.DetailActivity" />
         <activity android:name=".view.LoginActivity" />
-        <activity android:name=".view.AdminActivity"></activity>
+        <activity android:name=".view.AdminActivity" />
+        <activity android:name=".view.MapsActivity"></activity>
     </application>
 
 </manifest>

@@ -48,8 +48,42 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/recyleView"/>
+        android:layout_margin="14dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter berdasarka :"/>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                   android:checked="true"
+                    android:id="@+id/radioGardu"
+                    android:text="Gardu"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                   android:layout_marginLeft="14dp"
+                    android:id="@+id/radioPenyulang"
+                    android:text="Penyulang"/>
+                </LinearLayout>
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="14dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recyleView"/>
+    </LinearLayout>
+
 </LinearLayout>
